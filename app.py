@@ -1,9 +1,10 @@
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import csv
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".")
 CORS(app)
 
 CSV_FILE = 'attendees.csv'
@@ -25,6 +26,10 @@ def write_attendees(attendees):
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(attendees)
+
+@app.route('/')
+def serve_index():
+    return send_from_directory('.', 'index.html')
 
 @app.route('/attendees', methods=['GET'])
 def get_attendees():
